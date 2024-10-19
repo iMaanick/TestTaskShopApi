@@ -37,22 +37,22 @@ def read_categories(
     return categories
 
 
+@categories_router.get("/{category_id}", response_model=Category)
+def read_category(
+        database: Annotated[DatabaseGateway, Depends()],
+        category_id: int,
+) -> Category:
+    category = get_category(database, category_id)
+    return category
+
+
 @categories_router.delete("/{category_id}", response_model=Category)
 def delete_category(
         database: Annotated[DatabaseGateway, Depends()],
         uow: Annotated[UoW, Depends()],
         category_id: int,
-):
+) -> Category:
     category = delete_category_from_db(database, uow, category_id)
-    return category
-
-
-@categories_router.get("/{category_id}", response_model=Category)
-def read_category(
-        database: Annotated[DatabaseGateway, Depends()],
-        category_id: int,
-):
-    category = get_category(database, category_id)
     return category
 
 
@@ -63,6 +63,6 @@ def update_category(
         category_id: int,
         category_data: CategoryUpdate
 
-):
+) -> Category:
     category = update_category_db(database, uow, category_id, category_data)
     return category

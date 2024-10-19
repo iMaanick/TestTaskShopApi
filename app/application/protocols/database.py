@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Optional
+from app.adapters.sqlalchemy_db.models import ProductDB
 
-from app.adapters.sqlalchemy_db.models import Category as CategoryDB
+from app.adapters.sqlalchemy_db.models import CategoryDB
 from app.application.models.category import CategoryCreate, Category, CategoryUpdate
-from app.application.models.product import Product
+from app.application.models.product import Product, ProductCreate, ProductUpdate
 
 
 class UoW(ABC):
@@ -19,7 +20,7 @@ class UoW(ABC):
 class DatabaseGateway(ABC):
 
     @abstractmethod
-    def add_category(self, category: Category) -> int:
+    def add_category(self, category_data: CategoryCreate) -> CategoryDB:
         raise NotImplementedError
 
     @abstractmethod
@@ -27,7 +28,7 @@ class DatabaseGateway(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_category(self, category_id: int) -> CategoryDB:
+    def get_category(self, category_id: int) -> Optional[CategoryDB]:
         raise NotImplementedError
 
     @abstractmethod
@@ -39,5 +40,31 @@ class DatabaseGateway(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def add_product(self, product: Product) -> None:
+    def add_product(self, product_data: ProductCreate) -> ProductDB:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_product(self, product_id: int) -> Optional[ProductDB]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def update_product(self, product_data: ProductUpdate, product: ProductDB) -> ProductDB:
+        raise NotImplementedError
+
+    @abstractmethod
+    def delete_product(self, product: ProductDB) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_products(
+            self,
+            category_id: Optional[int] = None,
+            min_price: Optional[float] = None,
+            max_price: Optional[float] = None,
+            min_in_stock: Optional[int] = None,
+            max_in_stock: Optional[int] = None,
+            search_term: Optional[str] = None,
+            skip: int = 0,
+            limit: int = 10,
+    ) -> List[ProductDB]:
         raise NotImplementedError

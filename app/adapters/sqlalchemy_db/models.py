@@ -1,7 +1,10 @@
+import os
+from typing import Optional, List
+
+from dotenv import load_dotenv
 from sqlalchemy import Integer, String, Column, MetaData, Table, Float, Boolean, ForeignKey, create_engine
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import registry, relationship, declarative_base
-
+from sqlalchemy.orm import registry, relationship, declarative_base, sessionmaker, Mapped, mapped_column
 
 metadata_obj = MetaData()
 mapper_registry = registry()
@@ -9,36 +12,36 @@ mapper_registry = registry()
 Base = declarative_base()
 
 product_category_association = Table(
-    'product_category', Base.metadata,
+    'product_category',
+    Base.metadata,
     Column('product_id', Integer, ForeignKey('products.id'), primary_key=True),
     Column('category_id', Integer, ForeignKey('categories.id'), primary_key=True)
 )
 
 
-class Product(Base):
+class ProductDB(Base):
     __tablename__ = 'products'
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    description = Column(String, nullable=True)
-    price = Column(Float, nullable=False)
-    in_stock = Column(Boolean, default=True)
-    categories = relationship(
-        "Category",
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    price: Mapped[float] = mapped_column(Float, nullable=False)
+    in_stock: Mapped[int] = mapped_column(Integer, default=0)
+    categories: Mapped[list["CategoryDB"]] = relationship(
+        "CategoryDB",
         secondary=product_category_association,
         back_populates="products"
     )
 
 
-class Category(Base):
+class CategoryDB(Base):
     __tablename__ = 'categories'
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    description = Column(String, nullable=True)
-    products = relationship(
-        "Product",
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    products: Mapped[List[ProductDB]] = relationship(
+        "ProductDB",
         secondary=product_category_association,
-        back_populates="categories"
+        back_populates="categories",
     )
-
