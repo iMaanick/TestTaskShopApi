@@ -71,7 +71,7 @@ def update_product(
 
 
 @products_router.delete("/{product_id}", response_model=Product)
-def delete_category(
+def delete_product(
         database: Annotated[DatabaseGateway, Depends()],
         uow: Annotated[UoW, Depends()],
         product_id: int,

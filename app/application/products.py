@@ -2,8 +2,7 @@ from typing import List, Optional
 
 from fastapi import HTTPException
 
-from app.adapters.sqlalchemy_db.models import CategoryDB, ProductDB
-from app.application.models.category import CategoryCreate, CategoryUpdate
+from app.adapters.sqlalchemy_db.models import ProductDB
 from app.application.models.product import ProductCreate, ProductUpdate
 from app.application.protocols.database import DatabaseGateway, UoW
 
@@ -61,7 +60,7 @@ def update_product_db(
     product = database.get_product(product_id)
     if product is None:
         raise HTTPException(status_code=404, detail="Product not found")
-    database.update_product(product_data, product)
+    product = database.update_product(product_data, product)
     uow.commit()
     return product
 

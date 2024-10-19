@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict
 
@@ -8,7 +8,7 @@ from app.application.models.category import Category
 class Product(BaseModel):
     id: int
     name: str
-    description: str
+    description: Optional[str] = None
     price: float
     in_stock: int
     categories: List[Category] = []
@@ -17,7 +17,7 @@ class Product(BaseModel):
 
 class ProductCreate(BaseModel):
     name: str
-    description: str
+    description: Optional[str] = None
     price: float
     in_stock: int
     categories: List[int] = []
@@ -25,7 +25,7 @@ class ProductCreate(BaseModel):
 
 class ProductUpdate(BaseModel):
     name: str
-    description: str
+    description: Optional[str] = None
     price: float
     in_stock: int
     categories: List[int] = []

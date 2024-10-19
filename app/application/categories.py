@@ -58,6 +58,6 @@ def update_category_db(
     category = database.get_category(category_id)
     if category is None:
         raise HTTPException(status_code=404, detail="Category not found")
-    database.update_category(category_data, category)
+    category = database.update_category(category_data, category)
     uow.commit()
     return category
