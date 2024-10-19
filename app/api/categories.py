@@ -31,7 +31,7 @@ def create_category(
 
 
 @categories_router.get("/", response_model=List[Category])
-def read_categories(
+def list_categories(
         database: Annotated[DatabaseGateway, Depends()],
         skip: Annotated[int, Query(ge=0)] = 0,
         limit: Annotated[int, Query(ge=0)] = 10,
@@ -44,7 +44,7 @@ def read_categories(
 
 
 @categories_router.get("/{category_id}", response_model=Category)
-def read_category(
+def get_category_by_id(
         database: Annotated[DatabaseGateway, Depends()],
         category_id: int,
 ) -> Category:

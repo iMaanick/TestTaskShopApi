@@ -23,7 +23,7 @@ def create_product(
 
 
 @products_router.get("/", response_model=List[Product])
-def read_products(
+def list_products(
         database: Annotated[DatabaseGateway, Depends()],
         category_id: Optional[int] = None,
         min_price: Annotated[Optional[float], Query(ge=0)] = None,
@@ -52,7 +52,7 @@ def read_products(
 
 
 @products_router.get("/{product_id}", response_model=Product)
-def read_product(
+def get_product_by_id(
         database: Annotated[DatabaseGateway, Depends()],
         product_id: int,
 ) -> Product:
