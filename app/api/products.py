@@ -2,16 +2,17 @@ from typing import Annotated, List, Optional
 
 from fastapi import APIRouter, Depends, Query
 
+from app.api.depends_stub import Stub
 from app.application.models.product import Product, ProductCreate, ProductUpdate
 from app.application.products import new_product, get_product, update_product_db, delete_product_from_db, get_products
-from app.application.protocols.database import DatabaseGateway, UoW
+from app.application.protocols.database import UoW, ProductDatabaseGateway
 
 products_router = APIRouter()
 
 
 @products_router.post("/", response_model=Product)
 def create_product(
-        database: Annotated[DatabaseGateway, Depends()],
+        database: Annotated[ProductDatabaseGateway, Depends(Stub(ProductDatabaseGateway))],
         uow: Annotated[UoW, Depends()],
         product_data: ProductCreate,
 ) -> Product:
@@ -24,7 +25,7 @@ def create_product(
 
 @products_router.get("/", response_model=List[Product])
 def list_products(
-        database: Annotated[DatabaseGateway, Depends()],
+        database: Annotated[ProductDatabaseGateway, Depends(Stub(ProductDatabaseGateway))],
         category_id: Optional[int] = None,
         min_price: Annotated[Optional[float], Query(ge=0)] = None,
         max_price: Annotated[Optional[float], Query(ge=0)] = None,
@@ -53,7 +54,7 @@ def list_products(
 
 @products_router.get("/{product_id}", response_model=Product)
 def get_product_by_id(
-        database: Annotated[DatabaseGateway, Depends()],
+        database: Annotated[ProductDatabaseGateway, Depends(Stub(ProductDatabaseGateway))],
         product_id: int,
 ) -> Product:
     """
@@ -65,7 +66,7 @@ def get_product_by_id(
 
 @products_router.put("/{product_id}", response_model=Product)
 def update_product(
-        database: Annotated[DatabaseGateway, Depends()],
+        database: Annotated[ProductDatabaseGateway, Depends(Stub(ProductDatabaseGateway))],
         uow: Annotated[UoW, Depends()],
         product_id: int,
         product_data: ProductUpdate
@@ -80,7 +81,7 @@ def update_product(
 
 @products_router.delete("/{product_id}", response_model=Product)
 def delete_product(
-        database: Annotated[DatabaseGateway, Depends()],
+        database: Annotated[ProductDatabaseGateway, Depends(Stub(ProductDatabaseGateway))],
         uow: Annotated[UoW, Depends()],
         product_id: int,
 ) -> Product:

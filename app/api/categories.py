@@ -1,13 +1,14 @@
 from typing import Annotated, List
 
+from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel
 
+from app.api.depends_stub import Stub
 from app.application.categories import new_category, get_categories, delete_category_from_db, get_category, \
     update_category_db, get_products_by_category
 from app.application.models.category import CategoryCreate, Category, CategoryUpdate
 from app.application.models.product import Product
-from app.application.protocols.database import DatabaseGateway, UoW
-from fastapi import APIRouter, Depends, Query
+from app.application.protocols.database import UoW, CategoryDatabaseGateway
 
 categories_router = APIRouter()
 
@@ -18,7 +19,7 @@ class AddCategoriesResult(BaseModel):
 
 @categories_router.post("/", response_model=AddCategoriesResult)
 def create_category(
-        database: Annotated[DatabaseGateway, Depends()],
+        database: Annotated[CategoryDatabaseGateway, Depends(Stub(CategoryDatabaseGateway))],
         uow: Annotated[UoW, Depends()],
         category_data: CategoryCreate,
 ) -> AddCategoriesResult:
@@ -33,7 +34,7 @@ def create_category(
 
 @categories_router.get("/", response_model=List[Category])
 def list_categories(
-        database: Annotated[DatabaseGateway, Depends()],
+        database: Annotated[CategoryDatabaseGateway, Depends(Stub(CategoryDatabaseGateway))],
         skip: Annotated[int, Query(ge=0)] = 0,
         limit: Annotated[int, Query(ge=0)] = 10,
 ) -> List[Category]:
@@ -46,7 +47,7 @@ def list_categories(
 
 @categories_router.get("/{category_id}", response_model=Category)
 def get_category_by_id(
-        database: Annotated[DatabaseGateway, Depends()],
+        database: Annotated[CategoryDatabaseGateway, Depends(Stub(CategoryDatabaseGateway))],
         category_id: int,
 ) -> Category:
     """
@@ -58,7 +59,7 @@ def get_category_by_id(
 
 @categories_router.delete("/{category_id}", response_model=Category)
 def delete_category(
-        database: Annotated[DatabaseGateway, Depends()],
+        database: Annotated[CategoryDatabaseGateway, Depends(Stub(CategoryDatabaseGateway))],
         uow: Annotated[UoW, Depends()],
         category_id: int,
 ) -> Category:
@@ -71,7 +72,7 @@ def delete_category(
 
 @categories_router.put("/{category_id}", response_model=Category)
 def update_category(
-        database: Annotated[DatabaseGateway, Depends()],
+        database: Annotated[CategoryDatabaseGateway, Depends(Stub(CategoryDatabaseGateway))],
         uow: Annotated[UoW, Depends()],
         category_id: int,
         category_data: CategoryUpdate
@@ -86,7 +87,7 @@ def update_category(
 
 @categories_router.get("/{category_id}/products", response_model=List[Product])
 def list_products_by_category(
-        database: Annotated[DatabaseGateway, Depends()],
+        database: Annotated[CategoryDatabaseGateway, Depends(Stub(CategoryDatabaseGateway))],
         category_id: int,
 ) -> List[Product]:
     """

@@ -6,34 +6,12 @@ from app.adapters.sqlalchemy_db.models import CategoryDB
 from app.adapters.sqlalchemy_db.models import ProductDB
 from app.application.models.category import CategoryUpdate, CategoryCreate
 from app.application.models.product import ProductCreate, ProductUpdate
-from app.application.protocols.database import DatabaseGateway
+from app.application.protocols.database import ProductDatabaseGateway, CategoryDatabaseGateway
 
 
-class SqlaGateway(DatabaseGateway):
+class ProductSqlaGateway(ProductDatabaseGateway):
     def __init__(self, session: Session):
         self.session = session
-
-    def add_category(self, category_data: CategoryCreate) -> CategoryDB:
-        category = CategoryDB(name=category_data.name, description=category_data.description)
-        self.session.add(category)
-        return category
-
-    def get_categories(self, skip: int, limit: int) -> List[CategoryDB]:
-        categories = self.session.query(CategoryDB).offset(skip).limit(limit).all()
-        return categories
-
-    def get_category(self, category_id: int) -> Optional[CategoryDB]:
-        category = self.session.get(CategoryDB, category_id)
-        return category
-
-    def delete_category(self, category: CategoryDB) -> None:
-        self.session.delete(category)
-        return
-
-    def update_category(self, category_data: CategoryUpdate, category: CategoryDB) -> CategoryDB:
-        category.name = category_data.name
-        category.description = category_data.description
-        return category
 
     def add_product(self, product_data: ProductCreate) -> ProductDB:
         product = ProductDB(name=product_data.name,
@@ -96,6 +74,33 @@ class SqlaGateway(DatabaseGateway):
 
         products = query.offset(skip).limit(limit).all()
         return products
+
+
+class CategorySqlaGateway(CategoryDatabaseGateway):
+    def __init__(self, session: Session):
+        self.session = session
+
+    def add_category(self, category_data: CategoryCreate) -> CategoryDB:
+        category = CategoryDB(name=category_data.name, description=category_data.description)
+        self.session.add(category)
+        return category
+
+    def get_categories(self, skip: int, limit: int) -> List[CategoryDB]:
+        categories = self.session.query(CategoryDB).offset(skip).limit(limit).all()
+        return categories
+
+    def get_category(self, category_id: int) -> Optional[CategoryDB]:
+        category = self.session.get(CategoryDB, category_id)
+        return category
+
+    def delete_category(self, category: CategoryDB) -> None:
+        self.session.delete(category)
+        return
+
+    def update_category(self, category_data: CategoryUpdate, category: CategoryDB) -> CategoryDB:
+        category.name = category_data.name
+        category.description = category_data.description
+        return category
 
     def get_products_by_category(self, category_id: int) -> Optional[List[ProductDB]]:
         category = self.session.query(CategoryDB).filter(CategoryDB.id == category_id).first()

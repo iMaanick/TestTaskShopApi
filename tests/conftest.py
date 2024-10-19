@@ -8,34 +8,11 @@ from pytest import fixture
 from app.adapters.sqlalchemy_db.models import ProductDB, CategoryDB
 from app.application.models.category import CategoryCreate, CategoryUpdate
 from app.application.models.product import ProductUpdate, ProductCreate
-from app.application.protocols.database import DatabaseGateway, UoW
+from app.application.protocols.database import UoW, ProductDatabaseGateway, CategoryDatabaseGateway
 from app.main.web import init_routers
 
 
-class MockDatabase(DatabaseGateway):
-    def add_category(self, category: CategoryCreate) -> CategoryDB:
-        return CategoryDB(id=1, name=category.name, description=category.description)
-
-    def get_categories(self, skip: int, limit: int) -> List[CategoryDB]:
-        if skip == 0 and limit == 10:
-            return [CategoryDB(id=1, name="Category 1"), CategoryDB(id=2, name="Category 2")]
-        if skip == 1 and limit == 1:
-            return [CategoryDB(id=2, name="Category 2")]
-        if skip == 10 and limit is None:
-            return []
-        return []
-
-    def get_category(self, category_id: int) -> Optional[CategoryDB]:
-        if category_id == 1:
-            return CategoryDB(id=1, name="Category 1")
-        return None
-
-    def delete_category(self, category: CategoryDB) -> None:
-        return None
-
-    def update_category(self, category_data: CategoryUpdate, category: CategoryDB) -> CategoryDB:
-        return CategoryDB(id=1, name="Category 1")
-
+class MockProductDatabase(ProductDatabaseGateway):
     def add_product(self, product_data: ProductCreate) -> ProductDB:
         return ProductDB(
             id=1,
@@ -78,6 +55,31 @@ class MockDatabase(DatabaseGateway):
             ProductDB(id=2, name="Product 2", price=70.0, in_stock=3)
         ]
 
+
+class MockCategoryDatabase(CategoryDatabaseGateway):
+    def add_category(self, category: CategoryCreate) -> CategoryDB:
+        return CategoryDB(id=1, name=category.name, description=category.description)
+
+    def get_categories(self, skip: int, limit: int) -> List[CategoryDB]:
+        if skip == 0 and limit == 10:
+            return [CategoryDB(id=1, name="Category 1"), CategoryDB(id=2, name="Category 2")]
+        if skip == 1 and limit == 1:
+            return [CategoryDB(id=2, name="Category 2")]
+        if skip == 10 and limit is None:
+            return []
+        return []
+
+    def get_category(self, category_id: int) -> Optional[CategoryDB]:
+        if category_id == 1:
+            return CategoryDB(id=1, name="Category 1")
+        return None
+
+    def delete_category(self, category: CategoryDB) -> None:
+        return None
+
+    def update_category(self, category_data: CategoryUpdate, category: CategoryDB) -> CategoryDB:
+        return CategoryDB(id=1, name="Category 1")
+
     def get_products_by_category(self, category_id: int) -> Optional[List[ProductDB]]:
         if category_id == 1:
             return [
@@ -105,6 +107,7 @@ def mock_uow() -> Mock:
 def client(mock_uow: UoW) -> TestClient:
     app = FastAPI()
     init_routers(app)
-    app.dependency_overrides[DatabaseGateway] = MockDatabase
+    app.dependency_overrides[ProductDatabaseGateway] = MockProductDatabase
+    app.dependency_overrides[CategoryDatabaseGateway] = MockCategoryDatabase
     app.dependency_overrides[UoW] = lambda: mock_uow
     return TestClient(app)

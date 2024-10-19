@@ -17,28 +17,7 @@ class UoW(ABC):
         raise NotImplementedError
 
 
-class DatabaseGateway(ABC):
-
-    @abstractmethod
-    def add_category(self, category_data: CategoryCreate) -> CategoryDB:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_categories(self, skip: int, limit: int) -> List[CategoryDB]:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_category(self, category_id: int) -> Optional[CategoryDB]:
-        raise NotImplementedError
-
-    @abstractmethod
-    def delete_category(self, category: CategoryDB) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    def update_category(self, category_data: CategoryUpdate, category: CategoryDB) -> CategoryDB:
-        raise NotImplementedError
-
+class ProductDatabaseGateway(ABC):
     @abstractmethod
     def add_product(self, product_data: ProductCreate) -> ProductDB:
         raise NotImplementedError
@@ -67,6 +46,28 @@ class DatabaseGateway(ABC):
             skip: int = 0,
             limit: int = 10,
     ) -> List[ProductDB]:
+        raise NotImplementedError
+
+
+class CategoryDatabaseGateway(ABC):
+    @abstractmethod
+    def add_category(self, category_data: CategoryCreate) -> CategoryDB:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_categories(self, skip: int, limit: int) -> List[CategoryDB]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_category(self, category_id: int) -> Optional[CategoryDB]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def delete_category(self, category: CategoryDB) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def update_category(self, category_data: CategoryUpdate, category: CategoryDB) -> CategoryDB:
         raise NotImplementedError
 
     @abstractmethod

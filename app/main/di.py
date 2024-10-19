@@ -8,15 +8,19 @@ from fastapi import FastAPI, Depends
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.adapters.sqlalchemy_db.gateway import SqlaGateway
+from app.adapters.sqlalchemy_db.gateway import ProductSqlaGateway, CategorySqlaGateway
 from app.api.depends_stub import Stub
-from app.application.protocols.database import DatabaseGateway, UoW
+from app.application.protocols.database import UoW, ProductDatabaseGateway, CategoryDatabaseGateway
 
 logger = getLogger(__name__)
 
 
-def new_gateway(session: Session = Depends(Stub(Session))) -> Generator[SqlaGateway, None, None]:
-    yield SqlaGateway(session)
+def new_product_gateway(session: Session = Depends(Stub(Session))) -> Generator[ProductSqlaGateway, None, None]:
+    yield ProductSqlaGateway(session)
+
+
+def new_category_gateway(session: Session = Depends(Stub(Session))) -> Generator[CategorySqlaGateway, None, None]:
+    yield CategorySqlaGateway(session)
 
 
 def new_uow(session: Session = Depends(Stub(Session))) -> Session:
@@ -50,5 +54,6 @@ def init_dependencies(app: FastAPI) -> None:
     session_maker = create_session_maker()
 
     app.dependency_overrides[Session] = partial(new_session, session_maker)
-    app.dependency_overrides[DatabaseGateway] = new_gateway
+    app.dependency_overrides[ProductDatabaseGateway] = new_product_gateway
+    app.dependency_overrides[CategoryDatabaseGateway] = new_category_gateway
     app.dependency_overrides[UoW] = new_uow

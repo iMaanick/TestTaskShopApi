@@ -4,11 +4,11 @@ from fastapi import HTTPException
 
 from app.adapters.sqlalchemy_db.models import CategoryDB, ProductDB
 from app.application.models.category import CategoryCreate, CategoryUpdate
-from app.application.protocols.database import DatabaseGateway, UoW
+from app.application.protocols.database import UoW, CategoryDatabaseGateway
 
 
 def new_category(
-        database: DatabaseGateway,
+        database: CategoryDatabaseGateway,
         uow: UoW,
         category_data: CategoryCreate,
 ) -> int:
@@ -18,7 +18,7 @@ def new_category(
 
 
 def get_categories(
-        database: DatabaseGateway,
+        database: CategoryDatabaseGateway,
         skip: int,
         limit: int
 ) -> List[CategoryDB]:
@@ -27,7 +27,7 @@ def get_categories(
 
 
 def get_category(
-        database: DatabaseGateway,
+        database: CategoryDatabaseGateway,
         category_id: int,
 ) -> CategoryDB:
     category = database.get_category(category_id)
@@ -37,7 +37,7 @@ def get_category(
 
 
 def delete_category_from_db(
-        database: DatabaseGateway,
+        database: CategoryDatabaseGateway,
         uow: UoW,
         category_id: int,
 ) -> CategoryDB:
@@ -50,7 +50,7 @@ def delete_category_from_db(
 
 
 def update_category_db(
-        database: DatabaseGateway,
+        database: CategoryDatabaseGateway,
         uow: UoW,
         category_id: int,
         category_data: CategoryUpdate
@@ -64,7 +64,7 @@ def update_category_db(
 
 
 def get_products_by_category(
-        database: DatabaseGateway,
+        database: CategoryDatabaseGateway,
         category_id: int,
 
 ) -> List[ProductDB]:

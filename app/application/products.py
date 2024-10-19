@@ -4,11 +4,11 @@ from fastapi import HTTPException
 
 from app.adapters.sqlalchemy_db.models import ProductDB
 from app.application.models.product import ProductCreate, ProductUpdate
-from app.application.protocols.database import DatabaseGateway, UoW
+from app.application.protocols.database import UoW, ProductDatabaseGateway
 
 
 def new_product(
-        database: DatabaseGateway,
+        database: ProductDatabaseGateway,
         uow: UoW,
         product_data: ProductCreate,
 ) -> ProductDB:
@@ -18,7 +18,7 @@ def new_product(
 
 
 def get_product(
-        database: DatabaseGateway,
+        database: ProductDatabaseGateway,
         product_id: int,
 ) -> ProductDB:
     product = database.get_product(product_id)
@@ -28,7 +28,7 @@ def get_product(
 
 
 def get_products(
-        database: DatabaseGateway,
+        database: ProductDatabaseGateway,
         category_id: Optional[int] = None,
         min_price: Optional[float] = None,
         max_price: Optional[float] = None,
@@ -52,7 +52,7 @@ def get_products(
 
 
 def update_product_db(
-        database: DatabaseGateway,
+        database: ProductDatabaseGateway,
         uow: UoW,
         product_id: int,
         product_data: ProductUpdate
@@ -66,7 +66,7 @@ def update_product_db(
 
 
 def delete_product_from_db(
-        database: DatabaseGateway,
+        database: ProductDatabaseGateway,
         uow: UoW,
         product_id: int,
 ) -> ProductDB:
