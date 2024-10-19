@@ -15,6 +15,9 @@ def create_product(
         uow: Annotated[UoW, Depends()],
         product_data: ProductCreate,
 ) -> Product:
+    """
+    Creates a new product.
+    """
     product = new_product(database, uow, product_data)
     return product
 
@@ -31,6 +34,9 @@ def read_products(
         skip: Annotated[int, Query(ge=0)] = 0,
         limit: Annotated[int, Query(ge=0)] = 10,
 ) -> List[Product]:
+    """
+    Retrieves a list of products with optional filters.
+    """
     products = get_products(
         database,
         category_id,
@@ -50,6 +56,9 @@ def read_product(
         database: Annotated[DatabaseGateway, Depends()],
         product_id: int,
 ) -> Product:
+    """
+    Retrieves a product by its ID.
+    """
     product = get_product(database, product_id)
     return product
 
@@ -62,6 +71,9 @@ def update_product(
         product_data: ProductUpdate
 
 ) -> Product:
+    """
+    Updates a product by its ID.
+    """
     product = update_product_db(database, uow, product_id, product_data)
     return Product.model_validate(product)
 
@@ -72,5 +84,8 @@ def delete_product(
         uow: Annotated[UoW, Depends()],
         product_id: int,
 ) -> Product:
+    """
+    Deletes a product by its ID.
+    """
     product = delete_product_from_db(database, uow, product_id)
     return product

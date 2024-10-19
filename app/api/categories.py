@@ -21,6 +21,9 @@ def create_category(
         uow: Annotated[UoW, Depends()],
         category_data: CategoryCreate,
 ) -> AddCategoriesResult:
+    """
+    Creates a new category.
+    """
     category_id = new_category(database, uow, category_data)
     return AddCategoriesResult(
         category_id=category_id,
@@ -33,6 +36,9 @@ def read_categories(
         skip: Annotated[int, Query(ge=0)] = 0,
         limit: Annotated[int, Query(ge=0)] = 10,
 ) -> List[Category]:
+    """
+    Retrieves a list of categories with pagination.
+    """
     categories = get_categories(database, skip, limit)
     return [Category.model_validate(category) for category in categories]
 
@@ -42,6 +48,9 @@ def read_category(
         database: Annotated[DatabaseGateway, Depends()],
         category_id: int,
 ) -> Category:
+    """
+    Retrieves a category by its ID.
+    """
     category = get_category(database, category_id)
     return category
 
@@ -52,6 +61,9 @@ def delete_category(
         uow: Annotated[UoW, Depends()],
         category_id: int,
 ) -> Category:
+    """
+    Deletes a category by its ID.
+    """
     category = delete_category_from_db(database, uow, category_id)
     return category
 
@@ -64,5 +76,8 @@ def update_category(
         category_data: CategoryUpdate
 
 ) -> Category:
+    """
+    Updates a category by its ID.
+    """
     category = update_category_db(database, uow, category_id, category_data)
     return category

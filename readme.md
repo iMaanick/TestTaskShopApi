@@ -40,7 +40,13 @@ git clone https://github.com/iMaanick/TestTaskShopApi.git
 ```
 DATABASE_URI=DATABASE_URI
 ```
-6. Для запуска выполните:
+6. Выполнить для создания таблиц
+
+```
+python -m app.adapters.sqlalchemy_db.create_tables
+```
+
+7. Для запуска выполните:
 ```
 uvicorn --factory app.main:create_app 
 ```
