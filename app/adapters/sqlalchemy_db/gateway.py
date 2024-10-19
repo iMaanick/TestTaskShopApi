@@ -1,10 +1,11 @@
 from typing import List, Optional
 
 from sqlalchemy.orm import Session
+
 from app.adapters.sqlalchemy_db.models import CategoryDB
 from app.adapters.sqlalchemy_db.models import ProductDB
-from app.application.models.category import Category, CategoryUpdate, CategoryCreate
-from app.application.models.product import Product, ProductCreate, ProductUpdate
+from app.application.models.category import CategoryUpdate, CategoryCreate
+from app.application.models.product import ProductCreate, ProductUpdate
 from app.application.protocols.database import DatabaseGateway
 
 

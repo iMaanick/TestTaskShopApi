@@ -11,7 +11,7 @@ def new_product(
         database: DatabaseGateway,
         uow: UoW,
         product_data: ProductCreate,
-):
+) -> ProductDB:
     product = database.add_product(product_data)
     uow.commit()
     return product

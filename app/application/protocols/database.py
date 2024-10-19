@@ -1,19 +1,19 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
-from app.adapters.sqlalchemy_db.models import ProductDB
 
 from app.adapters.sqlalchemy_db.models import CategoryDB
-from app.application.models.category import CategoryCreate, Category, CategoryUpdate
-from app.application.models.product import Product, ProductCreate, ProductUpdate
+from app.adapters.sqlalchemy_db.models import ProductDB
+from app.application.models.category import CategoryCreate, CategoryUpdate
+from app.application.models.product import ProductCreate, ProductUpdate
 
 
 class UoW(ABC):
     @abstractmethod
-    def commit(self):
+    def commit(self) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    def flush(self):
+    def flush(self) -> None:
         raise NotImplementedError
 
 

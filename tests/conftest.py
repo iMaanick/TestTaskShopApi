@@ -16,7 +16,7 @@ class MockDatabase(DatabaseGateway):
     def add_category(self, category: CategoryCreate) -> CategoryDB:
         return CategoryDB(id=1, name=category.name, description=category.description)
 
-    def get_categories(self, skip: int, limit: int) -> list:
+    def get_categories(self, skip: int, limit: int) -> List[CategoryDB]:
         if skip == 0 and limit == 10:
             return [CategoryDB(id=1, name="Category 1"), CategoryDB(id=2, name="Category 2")]
         if skip == 1 and limit == 1:
@@ -80,7 +80,7 @@ class MockDatabase(DatabaseGateway):
 
 
 @fixture
-def mock_uow() -> UoW:
+def mock_uow() -> Mock:
     uow = Mock()
     uow.commit = Mock()
     uow.flush = Mock()
@@ -88,7 +88,7 @@ def mock_uow() -> UoW:
 
 
 @fixture
-def client(mock_uow):
+def client(mock_uow: UoW) -> TestClient:
     app = FastAPI()
     init_routers(app)
     app.dependency_overrides[DatabaseGateway] = MockDatabase

@@ -1,7 +1,7 @@
 import os
 from functools import partial
 from logging import getLogger
-from typing import Iterable
+from typing import Iterable, Generator
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Depends
@@ -9,22 +9,21 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.adapters.sqlalchemy_db.gateway import SqlaGateway
-from app.adapters.sqlalchemy_db.models import metadata_obj
-from app.application.protocols.database import DatabaseGateway, UoW
 from app.api.depends_stub import Stub
+from app.application.protocols.database import DatabaseGateway, UoW
 
 logger = getLogger(__name__)
 
 
-def new_gateway(session: Session = Depends(Stub(Session))):
+def new_gateway(session: Session = Depends(Stub(Session))) -> Generator[SqlaGateway, None, None]:
     yield SqlaGateway(session)
 
 
-def new_uow(session: Session = Depends(Stub(Session))):
+def new_uow(session: Session = Depends(Stub(Session))) -> Session:
     return session
 
 
-def create_session_maker():
+def create_session_maker() -> sessionmaker[Session]:
     load_dotenv()
     db_uri = os.getenv('DATABASE_URI')
     if not db_uri:
@@ -42,12 +41,12 @@ def create_session_maker():
     return sessionmaker(engine, autoflush=False, expire_on_commit=False)
 
 
-def new_session(session_maker: sessionmaker) -> Iterable[Session]:
+def new_session(session_maker: sessionmaker[Session]) -> Iterable[Session]:
     with session_maker() as session:
         yield session
 
 
-def init_dependencies(app: FastAPI):
+def init_dependencies(app: FastAPI) -> None:
     session_maker = create_session_maker()
 
     app.dependency_overrides[Session] = partial(new_session, session_maker)

@@ -1,10 +1,7 @@
-import os
 from typing import Optional, List
 
-from dotenv import load_dotenv
-from sqlalchemy import Integer, String, Column, MetaData, Table, Float, Boolean, ForeignKey, create_engine
-from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import registry, relationship, declarative_base, sessionmaker, Mapped, mapped_column
+from sqlalchemy import Integer, String, Column, MetaData, Table, Float, ForeignKey
+from sqlalchemy.orm import registry, relationship, declarative_base, Mapped, mapped_column
 
 metadata_obj = MetaData()
 mapper_registry = registry()

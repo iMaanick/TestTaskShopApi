@@ -34,7 +34,7 @@ def read_categories(
         limit: Annotated[int, Query(ge=0)] = 10,
 ) -> List[Category]:
     categories = get_categories(database, skip, limit)
-    return categories
+    return [Category.model_validate(category) for category in categories]
 
 
 @categories_router.get("/{category_id}", response_model=Category)

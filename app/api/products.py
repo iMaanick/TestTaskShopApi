@@ -1,14 +1,10 @@
 from typing import Annotated, List, Optional
 
-from pydantic import BaseModel
+from fastapi import APIRouter, Depends, Query
 
-from app.application.categories import new_category, get_categories, delete_category_from_db, get_category, \
-    update_category_db
-from app.application.models.category import CategoryCreate, Category, CategoryUpdate
 from app.application.models.product import Product, ProductCreate, ProductUpdate
 from app.application.products import new_product, get_product, update_product_db, delete_product_from_db, get_products
 from app.application.protocols.database import DatabaseGateway, UoW
-from fastapi import APIRouter, Depends, Query
 
 products_router = APIRouter()
 
@@ -46,7 +42,7 @@ def read_products(
         skip,
         limit,
     )
-    return products
+    return [Product.model_validate(product) for product in products]
 
 
 @products_router.get("/{product_id}", response_model=Product)
@@ -67,7 +63,7 @@ def update_product(
 
 ) -> Product:
     product = update_product_db(database, uow, product_id, product_data)
-    return product
+    return Product.model_validate(product)
 
 
 @products_router.delete("/{product_id}", response_model=Product)
