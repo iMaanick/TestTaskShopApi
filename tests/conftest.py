@@ -78,6 +78,20 @@ class MockDatabase(DatabaseGateway):
             ProductDB(id=2, name="Product 2", price=70.0, in_stock=3)
         ]
 
+    def get_products_by_category(self, category_id: int) -> Optional[List[ProductDB]]:
+        if category_id == 1:
+            return [
+                ProductDB(id=1, name="Product 1", price=100.0, in_stock=5),
+                ProductDB(id=2, name="Product 2", price=150.0, in_stock=3)
+            ]
+        if category_id == 2:
+            return [
+                ProductDB(id=3, name="Product 3", price=200.0, in_stock=10)
+            ]
+        if category_id == 3:
+            return []
+        return None
+
 
 @fixture
 def mock_uow() -> Mock:

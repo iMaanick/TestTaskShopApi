@@ -68,3 +68,7 @@ class DatabaseGateway(ABC):
             limit: int = 10,
     ) -> List[ProductDB]:
         raise NotImplementedError
+
+    @abstractmethod
+    def get_products_by_category(self, category_id: int) -> Optional[List[ProductDB]]:
+        raise NotImplementedError

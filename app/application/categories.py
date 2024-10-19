@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import HTTPException
 
-from app.adapters.sqlalchemy_db.models import CategoryDB
+from app.adapters.sqlalchemy_db.models import CategoryDB, ProductDB
 from app.application.models.category import CategoryCreate, CategoryUpdate
 from app.application.protocols.database import DatabaseGateway, UoW
 
@@ -61,3 +61,14 @@ def update_category_db(
     category = database.update_category(category_data, category)
     uow.commit()
     return category
+
+
+def get_products_by_category(
+        database: DatabaseGateway,
+        category_id: int,
+
+) -> List[ProductDB]:
+    products = database.get_products_by_category(category_id)
+    if products is None:
+        raise HTTPException(status_code=404, detail="Category not found")
+    return products

@@ -3,8 +3,9 @@ from typing import Annotated, List
 from pydantic import BaseModel
 
 from app.application.categories import new_category, get_categories, delete_category_from_db, get_category, \
-    update_category_db
+    update_category_db, get_products_by_category
 from app.application.models.category import CategoryCreate, Category, CategoryUpdate
+from app.application.models.product import Product
 from app.application.protocols.database import DatabaseGateway, UoW
 from fastapi import APIRouter, Depends, Query
 
@@ -81,3 +82,15 @@ def update_category(
     """
     category = update_category_db(database, uow, category_id, category_data)
     return category
+
+
+@categories_router.get("/{category_id}/products", response_model=List[Product])
+def list_products_by_category(
+        database: Annotated[DatabaseGateway, Depends()],
+        category_id: int,
+) -> List[Product]:
+    """
+    Get products by a category ID.
+    """
+    products = get_products_by_category(database, category_id)
+    return products

@@ -96,3 +96,9 @@ class SqlaGateway(DatabaseGateway):
 
         products = query.offset(skip).limit(limit).all()
         return products
+
+    def get_products_by_category(self, category_id: int) -> Optional[List[ProductDB]]:
+        category = self.session.query(CategoryDB).filter(CategoryDB.id == category_id).first()
+        if not category:
+            return None
+        return category.products
